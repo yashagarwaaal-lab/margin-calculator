@@ -124,7 +124,7 @@ def future_margins(symbol,expiry_date,qty,b_s_side):
     if b_s_side=="Buy":
         value=max(risk_array)
     else:
-        value=min(risk_array)
+        value=abs(min(risk_array))
     lot=lot_size.get(symbol)
     span_margin=value*lot*qty
     if OTH_rate.get((symbol)) is None:
