@@ -777,6 +777,7 @@ if st.button("Calculate Margin"):
     f_e=0
     f_s=0
     p_p=0
+    f_ss=0
     for name in unique_name:
         f_e = f_e + \
         exposure_margin1.get(name, {"Exposure": 0})["Exposure"] + \
@@ -790,13 +791,13 @@ if st.button("Calculate Margin"):
         exposure_margin9.get(name, {"Exposure": 0})["Exposure"]
 
         #f_e=f_e+exposure_margin1.get((name))["Exposure"]+exposure_margin2.get((name))["Exposure"]+exposure_margin3.get((name))["Exposure"]+exposure_margin4.get((name))["Exposure"]+exposure_margin5.get((name))["Exposure"]+exposure_margin6.get((name))["Exposure"]+exposure_margin7.get((name))["Exposure"]+exposure_margin8.get((name))["Exposure"]+exposure_margin9.get((name))["Exposure"]
-        
-        f_s=f_s + \
-        abs(spread1.get(name,0) + \
+        f_ss=f_ss+spread1.get(name,0) + \
         spread2.get(name,0) + \
         spread3.get(name,0) + \
         spread4.get(name,0) + \
-        spread5.get(name,0) )+ \
+        spread5.get(name,0) 
+        f_s=f_s + \
+        f_ss+ \
         span_margins.get(name, 0) + \
         option_price.get(name, {"Option Price": 0})["Option Price"]
         #f_s=f_s+delta0.get((name))["Delta"]+delta1.get((name))["Delta"]+delta2.get((name))["Delta"]+delta3.get((name))["Delta"]+delta4.get((name))["Delta"]+span_margins.get((name))+option_price.get((name))["Option Price"]
