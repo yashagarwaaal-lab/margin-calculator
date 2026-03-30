@@ -232,7 +232,24 @@ st.subheader("📊 Combined Margin Requirements")
 if st.button("Calculate Margin"):
 #========================================================
 #Removing consolidating similar orders
+    combined_orders = {}
+
+    for order in st.session_state.orders:
+        key = (
+            order["Type"],
+            order["Symbol"],
+            order["Expiry"],
+            order["OptionType"],
+            order["Strike"],
+            order["Side"]
+        )
+        if key not in combined_orders:
+            combined_orders[key] = order.copy()
+        else:
+            combined_orders[key]["Qty"] += order["Qty"]
     
+    # Replace orders safely
+    st.session_state.orders = list(combined_orders.values())
                         
     position_details={}
     #Storing relevant data in dictionary
