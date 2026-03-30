@@ -221,14 +221,6 @@ if st.session_state.orders:
             "Premium Amount": round(premium,2)
         })
 
-
-
-
-
-
-
-    
-
     df = pd.DataFrame(enriched_orders)
     st.dataframe(df, use_container_width=True)
 #=========================================================================================
@@ -238,7 +230,10 @@ if st.session_state.orders:
 st.subheader("📊 Combined Margin Requirements")
 
 if st.button("Calculate Margin"):
-
+#========================================================
+#Removing consolidating similar orders
+    
+                        
     position_details={}
     #Storing relevant data in dictionary
     for order in st.session_state.orders:
