@@ -267,7 +267,7 @@ if st.button("Calculate Margin"):
                 risk_array=fut_name_expiry.get((order["Symbol"],order["Expiry"]))
                 risk_array = [-val for val in risk_array]
                 delta=-1
-            exposure_margin=exposure_rate*lot*price
+            exposure_margin=exposure_rate
 
         if order["Type"]=="Option":
             d1=order["OptionType"]
