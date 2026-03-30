@@ -235,7 +235,9 @@ if st.session_state.orders:
 
 # Portfolio Margins
 
-if st.button("Add Order"):
+st.subheader("📊 Combined Margin Requirements")
+
+if st.button("Calculate Margin"):
 
     position_details={}
     #Storing relevant data in dictionary
@@ -816,9 +818,7 @@ if st.button("Add Order"):
 
 # MARGIN OUTPUT PANEL
 # -----------------------------
-st.subheader("📊 Combined Margin Requirements")
 
-if st.button("Calculate Margin"):
     col1, col2 = st.columns(2)
 
     with col1:
