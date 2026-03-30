@@ -256,9 +256,9 @@ if st.button("Calculate Margin"):
             price=fut_name_price.get((order["Symbol"],order["Expiry"]))
             lot=lot_size.get(order["Symbol"])
             if OTH_rate.get((order["Symbol"])) is None:
-                exposure_rate=0.02*qty*price*lot
+                exposure_rate=0.02*price*lot
             else:
-                exposure_rate=OTH_rate.get((order["Symbol"]))*qty*price*lot
+                exposure_rate=OTH_rate.get((order["Symbol"]))*price*lot
 
             if order["Side"]=="Buy":
                 risk_array=fut_name_expiry.get((order["Symbol"],order["Expiry"]))
