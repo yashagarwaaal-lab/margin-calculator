@@ -114,7 +114,29 @@ if st.button("Reset"):
 # DISPLAY TABLE
 # -----------------------------
 st.subheader("📋 Orders")
-df = pd.DataFrame(st.session_state.orders)
+
+if st.session_state.orders:
+
+    header = st.columns([1,1,1,1,1,1,1,0.5])
+    headers = ["Type","Symbol","Expiry","OptType","Strike","Qty","Side",""]
+    
+    for col, h in zip(header, headers):
+        col.markdown(f"**{h}**")
+
+    for i, order in enumerate(st.session_state.orders):
+        row = st.columns([1,1,1,1,1,1,1,0.5])
+
+        row[0].write(order["Type"])
+        row[1].write(order["Symbol"])
+        row[2].write(order["Expiry"])
+        row[3].write(order["OptionType"])
+        row[4].write(order["Strike"])
+        row[5].write(order["Qty"])
+        row[6].write(order["Side"])
+
+        if row[7].button("❌", key=f"delete_{i}"):
+            st.session_state.orders.pop(i)
+            st.rerun()
 #st.dataframe(df, use_container_width=True)
 #=================================================================================================
 #Creating a function to find span margin and exposure margin for futures
