@@ -972,6 +972,9 @@ if st.button("Calculate Margin"):
         f_ss=0
         p_ps=0
         t_ms=0
+        f_e=0
+        f_s=0
+        p_p=0
         
         f_e = f_e + \
         exposure_margin1.get(name, {"Exposure": 0})["Exposure"] + \
