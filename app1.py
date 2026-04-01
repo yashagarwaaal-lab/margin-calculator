@@ -396,7 +396,8 @@ if st.button("Calculate Margin"):
             "Price":details["Price"],
             "Exposure per unit":details["Exposure per unit"],
             "Lot Size":details["Lot Size"],
-            "Premium":details["Premium"]
+            "Premium":details["Premium"],
+            "Quantity_spread":details["Quantity"]
         }
         final_workbook.append(workbook)
 
@@ -426,6 +427,95 @@ if st.button("Calculate Margin"):
     new_array1 = pd.DataFrame(sorted_data)
     unique_name=new_array["Name"].unique()
 
+    #Netting all the positions that are exactly opposite to each other
+    for i in range(len(new_array)):
+        for j in range (len(new_array)):
+            if new_array.loc[i,"Quantity"]>0 and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]==new_array.loc[j,"Type"] and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"] and new_array.loc[i,"Strike"]==new_array.loc[j,"Strike"] and new_array.loc[i,"Buy/Sell"]!=new_array.loc[j,"Buy/Sell"]:
+                if new_array.loc[i,"Quantity"]>=new_array.loc[j,"Quantity"]:
+                    m=new_array.loc[j,"Quantity"]
+                else:
+                    m=new_array.loc[i,"Quantity"]
+                new_array[i,"Quantity"]=new_array[i,"Quantity"]-m
+                new_array[j,"Quantity"]=new_array[j,"Quantity"]-m
+                new_array[i,"Quantity_spread"]=new_array[i,"Quantity"]-m
+                new_array[j,"Quantity_spread"]=new_array[j,"Quantity"]-m
+
+    #Calculating spread margins
+    #Netting spread for long future with short call (same expiry)
+    #Netting spread for long future with long put (same expiry)
+    for name in unique_name:
+        for i in range(len(new_array)):
+            if name==new_array.loc[i,"Name"]:
+                for j in range(len(new_array)):
+                    if new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Future" and new_array.loc[i,"Buy/Sell"]=="Buy" and new_array.loc[i,"Quantity_spread"]>0:
+                        if new_array.loc[j,"Type"]=="Call" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity_spread"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"]:
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                m=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                m=new_array.loc[i,"Quantity_spread"]
+                            new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity_spread"]-m
+                            new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity_spread"]-m
+                        elif new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity_spread"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"]:
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                m=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                m=new_array.loc[i,"Quantity_spread"]
+                            new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity_spread"]-m
+                            new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity_spread"]-m
+                        
+    #Netting spread for short future with short put
+    #Netting spread for short future with long call
+    for name in unique_name:
+        for i in range(len(new_array)):
+            if name==new_array.loc[i,"Name"]:
+                for j in range(len(new_array)):
+                    if new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Future" and new_array.loc[i,"Buy/Sell"]=="Sell" and new_array.loc[i,"Quantity_spread"]>0:
+                        if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity_spread"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"]:
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                m=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                m=new_array.loc[i,"Quantity_spread"]
+                            new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity_spread"]-m
+                            new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity_spread"]-m
+                        elif new_array.loc[j,"Type"]=="Call" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity_spread"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"]:
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                m=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                m=new_array.loc[i,"Quantity_spread"]
+                            new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity_spread"]-m
+                            new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity_spread"]-m
+
+
+    #Netting spread for short call with short put (same expiry)(no consideration for strike)
+    for name in unique_name:
+        for i in range(len(new_array)):
+            if name==new_array.loc[i,"Name"]:
+                for j in range(len(new_array)):
+                    if new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Call" and new_array.loc[i,"Buy/Sell"]=="Sell" and new_array.loc[i,"Quantity_spread"]>0:
+                        if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity_spread"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"]:
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                m=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                m=new_array.loc[i,"Quantity_spread"]
+                            new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity_spread"]-m
+                            new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity_spread"]-m
+
+
+    #Netting spread for long call with long put (same expiry)(no consideration for strike)
+    for name in unique_name:
+        for i in range(len(new_array)):
+            if name==new_array.loc[i,"Name"]:
+                for j in range(len(new_array)):
+                    if new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Call" and new_array.loc[i,"Buy/Sell"]=="Buy" and new_array.loc[i,"Quantity_spread"]>0:
+                        if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity_spread"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"]:
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                m=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                m=new_array.loc[i,"Quantity_spread"]
+                            new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity_spread"]-m
+                            new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity_spread"]-m
+
+
     option_price={}
     for name in unique_name:
         option_cost=0
@@ -438,7 +528,6 @@ if st.button("Calculate Margin"):
                         option_cost=option_cost+(new_array.loc[i,"Quantity"]*new_array.loc[i,"Price"])*new_array.loc[i,"Lot Size"]
         option_price[name]={"Option Price":option_cost}
     
-
     #Priority 1 poistions netting
     #Netting futures with opposite direction 
     #Netting short futures with short put (with same expiry)
@@ -447,6 +536,7 @@ if st.button("Calculate Margin"):
     for name in unique_name:
         exposure=0
         s_s=0
+        vv=0
         for i in range(len(new_array)):
             if name==new_array.loc[i,"Name"]:
                 for j in range(len(new_array)):
@@ -466,7 +556,12 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"] 
                             spread1[(name)]=s_s
                                 
                         elif new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Quantity"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"] :
@@ -540,6 +635,7 @@ if st.button("Calculate Margin"):
     for name in unique_name:
         exposure=0
         s_s=0
+        vv=0
         for i in range(len(new_array)):
             if name==new_array.loc[i,"Name"]:
                 for j in range(len(new_array)):
@@ -567,7 +663,13 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+
                             spread1_1[(name)]=s_s
                     exposure_margin5_1[(name)]={"Exposure":exposure}
     
@@ -579,6 +681,7 @@ if st.button("Calculate Margin"):
     for name in unique_name:
         exposure=0
         s_s=0
+        vv=0
         for i in range(len(new_array)):
             if name==new_array.loc[i,"Name"]:
                 for j in range(len(new_array)):
@@ -597,8 +700,12 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
-                    
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+
                     elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Future" and new_array.loc[i,"Buy/Sell"]=="Buy" and new_array.loc[i,"Quantity"]>0:
                         if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity"]>0:
                             if new_array.loc[i,"Quantity"]>=new_array.loc[j,"Quantity"]:
@@ -614,7 +721,12 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]            
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+
                     exposure_margin6[(name)]={"Exposure":exposure}   
                     spread3[(name)]=s_s 
 
@@ -659,6 +771,7 @@ if st.button("Calculate Margin"):
     for name in unique_name:
         exposure=0
         s_s=0
+        vv=0
         for i in range(len(new_array)):
             if name==new_array.loc[i,"Name"]:
                 for j in range(len(new_array)):
@@ -677,7 +790,12 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d=max))))*new_array.loc[v,"Delta"]
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+
                     
                     elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Future" and new_array.loc[i,"Buy/Sell"]=="Buy" and new_array.loc[i,"Quantity"]>0:
                         if new_array.loc[j,"Type"]=="Call" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity"]>0:
@@ -696,7 +814,12 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d=max))))*new_array.loc[v,"Delta"]
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+
                     exposure_margin4[(name)]={"Exposure":exposure} 
                     spread2[(name)]=s_s           
 
@@ -711,6 +834,7 @@ if st.button("Calculate Margin"):
     for name in unique_name:
         exposure=0
         s_s=0
+        vv=0
         for i in range(len(new_array)):
             if name==new_array.loc[i,"Name"]:
                 for j in range(len(new_array)):
@@ -729,7 +853,11 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]            
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
                             
                     elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Put" and new_array.loc[i,"Buy/Sell"]=="Sell" and new_array.loc[i,"Quantity"]>0:
                         if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Strike"]==new_array.loc[j,"Strike"]:
@@ -746,8 +874,11 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]            
-                            
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
                         
                     exposure_margin7[(name)]={"Exposure":exposure}    
                     spread4[(name)]=s_s
@@ -762,6 +893,7 @@ if st.button("Calculate Margin"):
     for name in unique_name:
         exposure=0
         s_s=0
+        vv=0
         for i in range(len(new_array)):
             if name==new_array.loc[i,"Name"]:
                 for j in range(len(new_array)):
@@ -780,7 +912,11 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]            
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
                             
                     elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Put" and new_array.loc[i,"Buy/Sell"]=="Sell" and new_array.loc[i,"Quantity"]>0:
                         if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity"]>0:
@@ -797,9 +933,12 @@ if st.button("Calculate Margin"):
                                 v=j
                             min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
                             max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
-                            s_s=s_s+m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]            
-                            
-                        
+                            if new_array.loc[i,"Quantity_spread"]>=new_array.loc[j,"Quantity_spread"]:
+                                vv=new_array.loc[j,"Quantity_spread"]
+                            else:
+                                vv=new_array.loc[i,"Quantity_spread"]
+                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                                                    
                     exposure_margin8[(name)]={"Exposure":exposure}    
                     spread5[(name)]=s_s
 
@@ -849,12 +988,12 @@ if st.button("Calculate Margin"):
         #f_e=f_e+exposure_margin1.get((name))["Exposure"]+exposure_margin2.get((name))["Exposure"]+exposure_margin3.get((name))["Exposure"]+exposure_margin4.get((name))["Exposure"]+exposure_margin5.get((name))["Exposure"]+exposure_margin6.get((name))["Exposure"]+exposure_margin7.get((name))["Exposure"]+exposure_margin8.get((name))["Exposure"]+exposure_margin9.get((name))["Exposure"]
        
         f_s=f_s + \
-        abs(spread1.get(name,0) + \
-        spread2.get(name,0) + \
-        spread3.get(name,0) + \
-        spread4.get(name,0) + \
-        spread5.get(name,0) + \
-        spread1_1.get(name,0))+ \
+        abs(spread1.get(name,0)) + \
+        abs(spread2.get(name,0)) + \
+        abs(spread3.get(name,0)) + \
+        abs(spread4.get(name,0)) + \
+        abs(spread5.get(name,0)) + \
+        abs(spread1_1.get(name,0)) + \
         span_margins.get(name, 0) + \
         option_price.get(name, {"Option Price": 0})["Option Price"]
         #f_s=f_s+delta0.get((name))["Delta"]+delta1.get((name))["Delta"]+delta2.get((name))["Delta"]+delta3.get((name))["Delta"]+delta4.get((name))["Delta"]+span_margins.get((name))+option_price.get((name))["Option Price"]
