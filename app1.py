@@ -1014,8 +1014,9 @@ if st.button("Calculate Margin"):
         elif p_ps>0:
             paid_received_s = "received"
 
-        p_ps=abs(p_ps)
         p_p=p_p+p_ps
+        p_ps=abs(p_ps)
+        
         t_ms=f_ss+f_es
 
         security_margins.append({
