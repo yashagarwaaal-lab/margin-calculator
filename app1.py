@@ -1008,17 +1008,14 @@ if st.button("Calculate Margin"):
         #f_s=f_s+delta0.get((name))["Delta"]+delta1.get((name))["Delta"]+delta2.get((name))["Delta"]+delta3.get((name))["Delta"]+delta4.get((name))["Delta"]+span_margins.get((name))+option_price.get((name))["Option Price"]
         
         p_ps= premium_o.get(name, {"Premium": 0})["Premium"]
-        p_p=p_p+p_ps
         #p_p=p_p+premium_o.get((name))["Premium"]
-
-
-
         if p_ps<0:
             paid_received_s = "paid"
         elif p_ps>0:
             paid_received_s = "received"
 
         p_ps=abs(p_ps)
+        p_p=p_p+p_ps
         t_ms=f_ss+f_es
 
         security_margins.append({
