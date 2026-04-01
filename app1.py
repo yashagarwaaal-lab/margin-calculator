@@ -827,8 +827,13 @@ if st.button("Calculate Margin"):
     f_e=0
     f_s=0
     p_p=0
+    security_margins=[]
 
     for name in unique_name:
+        f_ss=0
+        p_ps=0
+        t_ms=0
+        
         f_e = f_e + \
         exposure_margin1.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin2.get(name, {"Exposure": 0})["Exposure"] + \
@@ -857,6 +862,34 @@ if st.button("Calculate Margin"):
         p_p=p_p + premium_o.get(name, {"Premium": 0})["Premium"]
         #p_p=p_p+premium_o.get((name))["Premium"]
 
+        if f_s<0:
+            f_ss=0
+
+        if p_p<0:
+            paid_received_s = "paid"
+        else:
+            paid_received_s = "received"
+
+        p_ps=abs(p_p)
+        t_ms=f_s+f_e
+
+        security_margins.append({
+            "Symbol": name,
+            "Span": round(f_ss, 2),
+            "Exposure": round(f_e, 2),
+            "Total Margin": round(t_ms, 2),
+            "Premium": round(p_ps, 2),
+            "Paid/Received": paid_received_s
+        })
+
+    if f_s<0:
+        f_s=0
+
+    if p_p<0:
+        paid_received = "paid"
+    else:
+        paid_received = "received"
+
     if f_s<0:
         f_s=0
 
@@ -871,6 +904,11 @@ if st.button("Calculate Margin"):
 
 # MARGIN OUTPUT PANEL
 # -----------------------------
+#Security wise margin
+    st.subheader("📊 Security-wise Margin")
+
+    sec_df = pd.DataFrame(security_margins)
+    st.dataframe(sec_df, use_container_width=True)
 
     col1, col2 = st.columns(2)
 
