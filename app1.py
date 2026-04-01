@@ -7,8 +7,8 @@ import streamlit as st
 import pickle
 import gzip
 
-import os
-st.write("Current files:", os.listdir())
+#import os
+#st.write("Current files:", os.listdir())
 st.set_page_config(layout="wide")
 
 @st.cache_data
