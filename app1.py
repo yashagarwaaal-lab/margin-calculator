@@ -1008,8 +1008,10 @@ if st.button("Calculate Margin"):
 
         if p_p<0:
             paid_received_s = "paid"
-        else:
+        elif p_p>0:
             paid_received_s = "received"
+        else:
+            paid_received_s = ""
 
         p_ps=abs(p_p)
         t_ms=f_s+f_e
@@ -1036,8 +1038,10 @@ if st.button("Calculate Margin"):
 
     if p_p<0:
         paid_received = "paid"
-    else:
+    elif p_p>0:
         paid_received = "received"
+    else:
+        paid_received = ""
 
     p_p=abs(p_p)
 
