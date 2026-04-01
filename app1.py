@@ -966,18 +966,18 @@ if st.button("Calculate Margin"):
     f_e=0
     f_s=0
     p_p=0
+    t_m=0
     security_margins=[]
 
     for name in unique_name:
+        f_es=0
         f_ss=0
         p_ps=0
         t_ms=0
-        f_e=0
-        f_s=0
-        p_p=0
+        paid_received_s=""
+
         
-        f_e = f_e + \
-        exposure_margin1.get(name, {"Exposure": 0})["Exposure"] + \
+        f_es = exposure_margin1.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin2.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin3.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin4.get(name, {"Exposure": 0})["Exposure"] + \
@@ -988,10 +988,11 @@ if st.button("Calculate Margin"):
         exposure_margin8.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin9.get(name, {"Exposure": 0})["Exposure"]
 
+        f_e=f_e+f_es
+
         #f_e=f_e+exposure_margin1.get((name))["Exposure"]+exposure_margin2.get((name))["Exposure"]+exposure_margin3.get((name))["Exposure"]+exposure_margin4.get((name))["Exposure"]+exposure_margin5.get((name))["Exposure"]+exposure_margin6.get((name))["Exposure"]+exposure_margin7.get((name))["Exposure"]+exposure_margin8.get((name))["Exposure"]+exposure_margin9.get((name))["Exposure"]
        
-        f_s=f_s + \
-        abs(spread1.get(name,0)) + \
+        f_ss=abs(spread1.get(name,0)) + \
         abs(spread2.get(name,0)) + \
         abs(spread3.get(name,0)) + \
         abs(spread4.get(name,0)) + \
@@ -999,25 +1000,26 @@ if st.button("Calculate Margin"):
         abs(spread1_1.get(name,0)) + \
         span_margins.get(name, 0) + \
         option_price.get(name, {"Option Price": 0})["Option Price"]
+
+        if f_ss<0:
+            f_ss=0
+
+        f_s=f_s+f_ss
         #f_s=f_s+delta0.get((name))["Delta"]+delta1.get((name))["Delta"]+delta2.get((name))["Delta"]+delta3.get((name))["Delta"]+delta4.get((name))["Delta"]+span_margins.get((name))+option_price.get((name))["Option Price"]
         
-        p_p=p_p + premium_o.get(name, {"Premium": 0})["Premium"]
+        p_ps= premium_o.get(name, {"Premium": 0})["Premium"]
+        p_p=p_p+p_ps
         #p_p=p_p+premium_o.get((name))["Premium"]
 
-        if f_s<0:
-            f_ss=0
-        else:
-            f_ss=f_s
 
-        if p_p<0:
+
+        if p_ps<0:
             paid_received_s = "paid"
-        elif p_p>0:
+        elif p_ps>0:
             paid_received_s = "received"
-        else:
-            paid_received_s = ""
 
-        p_ps=abs(p_p)
-        t_ms=f_s+f_e
+        p_ps=abs(p_ps)
+        t_ms=f_ss+f_es
 
         security_margins.append({
             "Symbol": name,
@@ -1033,18 +1035,13 @@ if st.button("Calculate Margin"):
 
     if p_p<0:
         paid_received = "paid"
-    else:
-        paid_received = "received"
-
-    if f_s<0:
-        f_s=0
-
-    if p_p<0:
-        paid_received = "paid"
     elif p_p>0:
         paid_received = "received"
     else:
         paid_received = ""
+
+    if f_s<0:
+        f_s=0
 
     p_p=abs(p_p)
 
