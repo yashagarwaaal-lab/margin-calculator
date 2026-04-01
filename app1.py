@@ -117,7 +117,7 @@ st.subheader("📋 Orders")
 
 if st.session_state.orders:
 
-    header = st.columns([1,1,1,1,1,1,1,0.5])
+    header = st.columns([1,1,1,1,1,1,1,0.3])
     headers = ["Type","Symbol","Expiry","OptType","Strike","Qty","Side",""]
     
     for col, h in zip(header, headers):
