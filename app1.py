@@ -532,7 +532,45 @@ if st.button("Calculate Margin"):
                         
                     exposure_margin5[(name)]={"Exposure":exposure}
 
-
+    #Priority 5.1 poistions netting
+    #Netting short call with short put (with same expiry)
+    #Netting short call with short put (with different expiry)
+    exposure_margin5_1={}
+    spread1_1={}
+    for name in unique_name:
+        exposure=0
+        s_s=0
+        for i in range(len(new_array)):
+            if name==new_array.loc[i,"Name"]:
+                for j in range(len(new_array)):
+                    if new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Call" and new_array.loc[i,"Buy/Sell"]=="Sell" and new_array.loc[i,"Quantity"]>0:
+                        if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"]:
+                            if new_array.loc[i,"Quantity"]>=new_array.loc[j,"Quantity"]:
+                                m=new_array.loc[j,"Quantity"]
+                            else:
+                                m=new_array.loc[i,"Quantity"]
+                            new_array.loc[i,"Quantity"]=new_array.loc[i,"Quantity"]-m
+                            new_array.loc[j,"Quantity"]=new_array.loc[j,"Quantity"]-m
+                            exposure=exposure+m*(new_array.loc[i,"Exposure per unit"]+new_array.loc[j,"Exposure per unit"])
+                    elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Call" and new_array.loc[i,"Buy/Sell"]=="Sell" and new_array.loc[i,"Quantity"]>0:
+                        if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Expiry Date"]!=new_array.loc[j,"Expiry Date"]:
+                            if new_array.loc[i,"Quantity"]>=new_array.loc[j,"Quantity"]:
+                                m=new_array.loc[j,"Quantity"]
+                            else:
+                                m=new_array.loc[i,"Quantity"]
+                            new_array.loc[i,"Quantity"]=new_array.loc[i,"Quantity"]-m
+                            new_array.loc[j,"Quantity"]=new_array.loc[j,"Quantity"]-m
+                            exposure=exposure+m*(new_array.loc[i,"Exposure per unit"]+new_array.loc[j,"Exposure per unit"])
+                            if float(new_array.loc[i,"Expiry Date"])>float(new_array.loc[j,"Expiry Date"]):
+                                v=i
+                            else:
+                                v=j
+                            min_d=min(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
+                            max_d=max(float(new_array.loc[i,"Expiry Date"]),float(new_array.loc[j,"Expiry Date"]))
+                            s_s=m*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            spread1_1[(name)]=s_s
+                    exposure_margin5_1[(name)]={"Exposure":exposure}
+    
     #Priority 6 poistions netting
     #Netting short future with long call (with different expiry)
     #Netting long future with long put (with different expiry)
