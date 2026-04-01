@@ -1024,7 +1024,7 @@ if st.button("Calculate Margin"):
         security_margins.append({
             "Symbol": name,
             "Span": round(f_ss, 2),
-            "Exposure": round(f_e, 2),
+            "Exposure": round(f_es, 2),
             "Total Margin": round(t_ms, 2),
             "Premium": round(p_ps, 2),
             "Paid/Received": paid_received_s
