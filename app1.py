@@ -864,6 +864,8 @@ if st.button("Calculate Margin"):
 
         if f_s<0:
             f_ss=0
+        else:
+            f_ss=f_s
 
         if p_p<0:
             paid_received_s = "paid"
