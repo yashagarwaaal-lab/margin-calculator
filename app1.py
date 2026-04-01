@@ -835,6 +835,7 @@ if st.button("Calculate Margin"):
         exposure_margin3.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin4.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin5.get(name, {"Exposure": 0})["Exposure"] + \
+        exposure_margin5_1.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin6.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin7.get(name, {"Exposure": 0})["Exposure"] + \
         exposure_margin8.get(name, {"Exposure": 0})["Exposure"] + \
@@ -847,7 +848,8 @@ if st.button("Calculate Margin"):
         spread2.get(name,0) + \
         spread3.get(name,0) + \
         spread4.get(name,0) + \
-        spread5.get(name,0))+ \
+        spread5.get(name,0) + \
+        spread1_1.get(name,0))+ \
         span_margins.get(name, 0) + \
         option_price.get(name, {"Option Price": 0})["Option Price"]
         #f_s=f_s+delta0.get((name))["Delta"]+delta1.get((name))["Delta"]+delta2.get((name))["Delta"]+delta3.get((name))["Delta"]+delta4.get((name))["Delta"]+span_margins.get((name))+option_price.get((name))["Option Price"]
