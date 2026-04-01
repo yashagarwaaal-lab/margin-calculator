@@ -956,7 +956,8 @@ if st.button("Calculate Margin"):
     for name in unique_name:
         premium_opt=0
         for i in range(len(new_array)):
-            premium_opt=premium_opt+new_array.loc[i,"Premium"]
+            if name==new_array.loc[i,"Name"]:
+                premium_opt=premium_opt+new_array.loc[i,"Premium"]
         premium_o[(name)]={"Premium":premium_opt}
 
             
