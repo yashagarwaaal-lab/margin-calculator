@@ -458,8 +458,8 @@ if st.button("Calculate Margin"):
                     m=new_array.loc[j,"Quantity"]
                 else:
                     m=new_array.loc[i,"Quantity"]
-            new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity"]-m
-            new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity"]-m
+                new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity"]-m
+                new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity"]-m
         
     #Calculating spread margins
     #Netting spread for long future with short call (same expiry)
