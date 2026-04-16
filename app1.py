@@ -586,7 +586,7 @@ if st.button("Calculate Margin"):
                                 s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
                             except (TypeError, KeyError, ValueError):
                                 s_s=s_s+0
-                        spread1[(name)]=s_s 
+                        
                             spread1[(name)]=s_s
                                 
                         elif new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Quantity"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"] :
