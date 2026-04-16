@@ -456,11 +456,14 @@ if st.button("Calculate Margin"):
             if new_array.loc[i,"Quantity"]>0 and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]==new_array.loc[j,"Type"] and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"] and new_array.loc[i,"Strike"]==new_array.loc[j,"Strike"] and new_array.loc[i,"Buy/Sell"]!=new_array.loc[j,"Buy/Sell"]:
                 if new_array.loc[i,"Quantity"]>=new_array.loc[j,"Quantity"]:
                     m=new_array.loc[j,"Quantity"]
+                    new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity"]-m
+                    new_array.loc[j,"Quantity_spread"]=0
                 else:
                     m=new_array.loc[i,"Quantity"]
+                    new_array.loc[i,"Quantity_spread"]=0
+                    new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity"]-m
 
-                new_array.loc[i,"Quantity_spread"]=new_array.loc[i,"Quantity"]-m
-                new_array.loc[j,"Quantity_spread"]=new_array.loc[j,"Quantity"]-m
+                
 
     #Calculating spread margins
     #Netting spread for long future with short call (same expiry)
