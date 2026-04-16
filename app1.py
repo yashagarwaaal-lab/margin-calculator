@@ -458,8 +458,7 @@ if st.button("Calculate Margin"):
                     m=new_array.loc[j,"Quantity"]
                 else:
                     m=new_array.loc[i,"Quantity"]
-                new_array[i,"Quantity"]=new_array[i,"Quantity"]-m
-                new_array[j,"Quantity"]=new_array[j,"Quantity"]-m
+
                 new_array[i,"Quantity_spread"]=new_array[i,"Quantity"]-m
                 new_array[j,"Quantity_spread"]=new_array[j,"Quantity"]-m
 
