@@ -582,7 +582,11 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"] 
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
+                        spread1[(name)]=s_s 
                             spread1[(name)]=s_s
                                 
                         elif new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Sell" and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Quantity"]>0 and new_array.loc[i,"Expiry Date"]==new_array.loc[j,"Expiry Date"] :
@@ -689,7 +693,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
 
                             spread1_1[(name)]=s_s
                     exposure_margin5_1[(name)]={"Exposure":exposure}
@@ -725,7 +732,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
 
                     elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Future" and new_array.loc[i,"Buy/Sell"]=="Buy" and new_array.loc[i,"Quantity"]>0:
                         if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity"]>0:
@@ -746,7 +756,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
 
                     exposure_margin6[(name)]={"Exposure":exposure}   
                     spread3[(name)]=s_s 
@@ -815,7 +828,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
 
                     
                     elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Future" and new_array.loc[i,"Buy/Sell"]=="Buy" and new_array.loc[i,"Quantity"]>0:
@@ -839,7 +855,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
 
                     exposure_margin4[(name)]={"Exposure":exposure} 
                     spread2[(name)]=s_s           
@@ -878,7 +897,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
                             
                     elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Put" and new_array.loc[i,"Buy/Sell"]=="Sell" and new_array.loc[i,"Quantity"]>0:
                         if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity"]>0 and new_array.loc[i,"Strike"]==new_array.loc[j,"Strike"]:
@@ -899,7 +921,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
                         
                     exposure_margin7[(name)]={"Exposure":exposure}    
                     spread4[(name)]=s_s
@@ -937,7 +962,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
                             
                     elif new_array.loc[i,"Name"]==new_array.loc[j,"Name"] and new_array.loc[i,"Type"]=="Put" and new_array.loc[i,"Buy/Sell"]=="Sell" and new_array.loc[i,"Quantity"]>0:
                         if new_array.loc[j,"Type"]=="Put" and new_array.loc[j,"Buy/Sell"]=="Buy" and new_array.loc[j,"Quantity"]>0:
@@ -958,7 +986,10 @@ if st.button("Calculate Margin"):
                                 vv=new_array.loc[j,"Quantity_spread"]
                             else:
                                 vv=new_array.loc[i,"Quantity_spread"]
-                            s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            try:
+                                s_s=s_s+vv*new_array.loc[i,"Lot Size"]*spread_name_date1_date2.get((name,str(int(min_d)),str(int(max_d))))*new_array.loc[v,"Delta"]
+                            except (TypeError, KeyError, ValueError):
+                                s_s=s_s+0
                                                     
                     exposure_margin8[(name)]={"Exposure":exposure}    
                     spread5[(name)]=s_s
